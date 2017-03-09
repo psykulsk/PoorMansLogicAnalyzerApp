@@ -67,15 +67,35 @@ public class SignalTrace extends View {
 
 
     private void drawSignalTrace(Canvas canvas){
-        float xPosition = xOffset;
+        float xPosition = 0;
 
         boolean currentBit;
         boolean previousBit = false;
 
         /*
-        * For Each sample check the bit on the traceNumber position and draw a line on a proper height.
+        * Calculations that will allow to draw on the screen only samples that can be seen.
+        * Without this, with long vectors of samples, drawing all of them wouldn't be efficient.
         * */
-        for (Byte sample : signalVector) {
+        int numberOfDrawnSamples = (int)Math.ceil(1/(double)(timeScale))+1;
+        int numberOfOffsetSamplesToTheLeft = -(int)Math.floor((double)xOffset/timeUnitWidth);
+
+        int totalNumberOfSamples = signalVector.size();
+
+        if(numberOfOffsetSamplesToTheLeft < 0)
+            numberOfOffsetSamplesToTheLeft = 0;
+        else if(numberOfOffsetSamplesToTheLeft >= totalNumberOfSamples)
+            numberOfOffsetSamplesToTheLeft = totalNumberOfSamples -1;
+
+        int indexOfLastDrawnSample = numberOfOffsetSamplesToTheLeft + numberOfDrawnSamples;
+
+        if(indexOfLastDrawnSample >= totalNumberOfSamples)
+            indexOfLastDrawnSample = totalNumberOfSamples - 1;
+
+        /*
+        * For each visible sample check the bit on the traceNumber position and draw a line on a proper height.
+        * */
+        for ( int index = numberOfOffsetSamplesToTheLeft; index < indexOfLastDrawnSample; index++) {
+            Byte sample = signalVector.elementAt(index);
             currentBit = getBit(sample, traceNumber);
             if(previousBit != currentBit){
                 canvas.drawLine(xPosition, this.getHeight()/2 - signalHeight/2 , xPosition,
@@ -97,10 +117,9 @@ public class SignalTrace extends View {
     Check whether bit on certain position in given byte is set to 1
 */
     private boolean getBit(byte _byte, int position) {
-        if(1 == ( byte)((_byte >> position) & 1))
-            return true;
-        else
-            return false;
+
+        return 1 == ( byte)((_byte >> position) & 1);
+
     }
 
     public void modifyOffset(float change) {
