@@ -3,15 +3,12 @@ package com.pitersk.poormanslogicanalyzerapp;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.DebugUtils;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.Vector;
-import java.util.logging.Logger;
 
 /**
  * Created by piter on 2017-03-04.
@@ -30,11 +27,6 @@ public class SignalTrace extends View {
     private final int traceNumber;
 
     private GestureDetector gestureDetector;
-    private ScaleGestureDetector mScaleDetector;
-    private float mScaleFactorX = 1.f;
-    private float mScaleFactorY = 1.f;
-
-    private float previousX; //For calculating deltaX at touch  event
 
     public SignalTrace(Context context,
                        Vector<Byte> integerVector, int traceNum, Paint paint) {
@@ -44,21 +36,11 @@ public class SignalTrace extends View {
         linePaint.setStrokeWidth(10);
         signalVector = integerVector;
         traceNumber = traceNum;
-        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
         gestureDetector = new GestureDetector(context, new mGestureListener());
         timeUnitWidth = timeScale * getWidth();
         signalHeight = signalHeightScale * getHeight();
 
 
-    }
-/*
-    Check whether bit on certain position in given byte is set to 1
-*/
-    public static boolean getBit(byte _byte, int position) {
-        if(1 == ( byte)((_byte >> position) & 1))
-            return true;
-        else
-            return false;
     }
 
     @Override
@@ -67,7 +49,7 @@ public class SignalTrace extends View {
         super.onDraw(canvas);
 
         canvas.save();
-        canvas.scale(mScaleFactorX, mScaleFactorY);
+
 
         drawSignalTrace(canvas);
 
@@ -84,31 +66,18 @@ public class SignalTrace extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //Let the ScaleGestureDetector inspect all events;
-        mScaleDetector.onTouchEvent(event);
+        //Let the gestureDetector inspect all events;
+        gestureDetector.onTouchEvent(event);
 
         return true;
     }
 
-    private class ScaleListener
-            extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            mScaleFactorX *= detector.getScaleFactor();
-            // Don't let the object get too small or too large.
-            mScaleFactorX = Math.max(0.1f, Math.min(mScaleFactorX, 5.0f));
-
-            invalidate();
-            return true;
-        }
-    }
 
     private class mGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
-            Log.d("onScroll","onscroll1");
-            xOffset += distanceX;
+            xOffset -= distanceX;
             invalidate();
             return true;
         }
@@ -140,5 +109,16 @@ public class SignalTrace extends View {
             xPosition += timeUnitWidth;
         }
     }
+
+    /*
+    Check whether bit on certain position in given byte is set to 1
+*/
+    private boolean getBit(byte _byte, int position) {
+        if(1 == ( byte)((_byte >> position) & 1))
+            return true;
+        else
+            return false;
+    }
+
 
 }
