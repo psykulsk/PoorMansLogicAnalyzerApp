@@ -18,6 +18,7 @@ public class SignalTrace extends View {
 
     private float timeScale = 0.05f;
     private float signalHeightScale = 0.8f;
+
     private float xOffset = 0;
     private int middlePoint = 0;
     private float timeUnitWidth = 1.0f;
@@ -26,7 +27,7 @@ public class SignalTrace extends View {
     private Vector<Byte> signalVector;
     private final int traceNumber;
 
-    private GestureDetector gestureDetector;
+
 
     public SignalTrace(Context context,
                        Vector<Byte> integerVector, int traceNum, Paint paint) {
@@ -36,7 +37,7 @@ public class SignalTrace extends View {
         linePaint.setStrokeWidth(10);
         signalVector = integerVector;
         traceNumber = traceNum;
-        gestureDetector = new GestureDetector(context, new mGestureListener());
+
         timeUnitWidth = timeScale * getWidth();
         signalHeight = signalHeightScale * getHeight();
 
@@ -64,24 +65,6 @@ public class SignalTrace extends View {
         signalHeight = signalHeightScale * getHeight();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        //Let the gestureDetector inspect all events;
-        gestureDetector.onTouchEvent(event);
-
-        return true;
-    }
-
-
-    private class mGestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                float distanceX, float distanceY) {
-            xOffset -= distanceX;
-            invalidate();
-            return true;
-        }
-    }
 
     private void drawSignalTrace(Canvas canvas){
         float xPosition = xOffset;
@@ -118,6 +101,10 @@ public class SignalTrace extends View {
             return true;
         else
             return false;
+    }
+
+    public void modifyOffset(float change) {
+        this.xOffset += change;
     }
 
 

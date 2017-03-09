@@ -18,15 +18,15 @@ public class MainActivity extends Activity {
 
 
         Vector<Byte> signalMockup = new Vector<>(100);
-        for(int i=0; i<100; i++){
+        for(int i=0; i<10; i++){
             signalMockup.add((byte) 1);
-            signalMockup.add((byte) 2);
-            signalMockup.add((byte) 3);
-            signalMockup.add((byte) 5);
             signalMockup.add((byte) 1);
-            signalMockup.add((byte) 2);
-            signalMockup.add((byte) 3);
+            signalMockup.add((byte) 7);
             signalMockup.add((byte) 5);
+            signalMockup.add((byte) 11);
+            signalMockup.add((byte) 2);
+            signalMockup.add((byte) 4);
+            signalMockup.add((byte) 1);
         }
 
         Paint paint = new Paint();
