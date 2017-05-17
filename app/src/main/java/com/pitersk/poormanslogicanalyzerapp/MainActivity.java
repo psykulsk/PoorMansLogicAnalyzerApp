@@ -15,8 +15,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         Vector<Byte> signalMockup = new Vector<>(100);
         for(int i=0; i<10; i++){
             signalMockup.add((byte) 1);
@@ -42,10 +40,6 @@ public class MainActivity extends Activity {
 
 
         MultipleTraceView multipleTraceView = new MultipleTraceView(getApplicationContext(),signalTraceVector);
-
-
-
-
 
 
         setContentView(multipleTraceView);
