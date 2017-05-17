@@ -13,7 +13,8 @@ import java.util.Vector;
 
 public class SignalTrace extends View {
 
-    private float timeScale = 0.05f;
+
+    private float timeScale;
     private float signalHeightScale = 0.8f;
 
     private float xOffset = 0;
@@ -23,8 +24,6 @@ public class SignalTrace extends View {
     private Paint linePaint;
     private Vector<Byte> signalVector;
     private final int traceNumber;
-
-
 
     public SignalTrace(Context context,
                        Vector<Byte> integerVector, int traceNum, Paint paint) {
@@ -63,11 +62,17 @@ public class SignalTrace extends View {
     }
 
 
+    public void setTimeScale(float timeScale) {
+        this.timeScale = timeScale;
+    }
+
     private void drawSignalTrace(Canvas canvas){
         float xPosition = 0;
 
         boolean currentBit;
         boolean previousBit = false;
+
+        timeUnitWidth = timeScale * getWidth();
 
         /*
         * Calculations that will allow to draw on the screen only samples that can be seen.
