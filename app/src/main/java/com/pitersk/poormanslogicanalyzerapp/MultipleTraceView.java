@@ -57,7 +57,8 @@ public class MultipleTraceView extends LinearLayout {
         int j = 0;
         for( byte b : newData) data[j++] = b;
         Vector<Byte> dataVector = new Vector<Byte>(Arrays.asList(data));
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams()
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,0,1);
+        layoutParams.
 
         for(int i = 0; i < numberOfSignals; ++i){
             SignalTrace signalTrace = new SignalTrace(getContext(), dataVector, i, paint );
