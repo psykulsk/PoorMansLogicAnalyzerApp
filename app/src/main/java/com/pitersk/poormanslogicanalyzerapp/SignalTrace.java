@@ -14,7 +14,7 @@ import java.util.Vector;
 public class SignalTrace extends View {
 
 
-    private float timeScale;
+    private float timeScale = 0.05f;
     private float signalHeightScale = 0.8f;
 
     private float xOffset = 0;
@@ -99,7 +99,7 @@ public class SignalTrace extends View {
         for ( int index = numberOfOffsetSamplesToTheLeft; index < indexOfLastDrawnSample; index++) {
             Byte sample = signalVector.elementAt(index);
             currentBit = getBit(sample, traceNumber);
-            if(previousBit != currentBit){
+            if(previousBit != currentBit && index != 0){
                 canvas.drawLine(xPosition, this.getHeight()/2 - signalHeight/2 , xPosition,
                         this.getHeight()/2 + signalHeight/2, linePaint);
             }

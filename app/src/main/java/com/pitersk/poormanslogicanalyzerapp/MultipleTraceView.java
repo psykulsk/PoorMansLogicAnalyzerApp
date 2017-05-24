@@ -51,6 +51,7 @@ public class MultipleTraceView extends LinearLayout {
 
     public void setSignalTraces(byte[] newData){
         this.setWeightSum(numberOfSignals);
+        this.removeAllViews();
         Paint paint = new Paint();
         paint.setColor(Color.GREEN);
         Byte[] data = new Byte[newData.length];
@@ -58,13 +59,15 @@ public class MultipleTraceView extends LinearLayout {
         for( byte b : newData) data[j++] = b;
         Vector<Byte> dataVector = new Vector<Byte>(Arrays.asList(data));
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,0,1);
-        layoutParams.
+        layoutParams.setMargins(0,2,0,2);
 
         for(int i = 0; i < numberOfSignals; ++i){
-            SignalTrace signalTrace = new SignalTrace(getContext(), dataVector, i, paint );
-            signalTrace.setLayoutParams();
+            SignalTrace signalTrace = new SignalTrace(getContext(), dataVector, i+3, paint );
+            signalTrace.setLayoutParams(layoutParams);
+            signalTrace.setBackgroundColor(Color.BLACK);
             this.addView(signalTrace);
         }
+        this.invalidate();
     }
 
     private class mGestureListener extends GestureDetector.SimpleOnGestureListener {
