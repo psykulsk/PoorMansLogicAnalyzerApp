@@ -2,12 +2,15 @@ package com.pitersk.poormanslogicanalyzerapp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 /**
@@ -25,22 +28,12 @@ public class MultipleTraceView extends LinearLayout {
 
     private float mScaleFactor = 0.05f;
 
-    public MultipleTraceView(Context context,Vector<SignalTrace> signalTraceVector) {
-        super(context);
+    private int numberOfSignals = 4;
+
+    public MultipleTraceView(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
         this.setOrientation(LinearLayout.VERTICAL);
         this.setBackgroundColor(Color.WHITE);
-        this.setWeightSum(signalTraceVector.size());
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
-        lp.weight = 1;
-        lp.setMargins(0,2,0,2);
-
-        for( SignalTrace trace : signalTraceVector){
-            trace.setBackgroundColor(Color.BLACK);
-            trace.setLayoutParams(lp);
-            trace.setTimeScale(mScaleFactor);
-            this.addView(trace);
-        }
-
         gestureDetector = new GestureDetector(context, new MultipleTraceView.mGestureListener());
         scaleGestureDetector = new ScaleGestureDetector(context, new MultipleTraceView.mScaleGestureListener());
 
@@ -53,6 +46,24 @@ public class MultipleTraceView extends LinearLayout {
         scaleGestureDetector.onTouchEvent(event);
 
         return true;
+    }
+
+
+    public void setSignalTraces(byte[] newData){
+        this.setWeightSum(numberOfSignals);
+        Paint paint = new Paint();
+        paint.setColor(Color.GREEN);
+        Byte[] data = new Byte[newData.length];
+        int j = 0;
+        for( byte b : newData) data[j++] = b;
+        Vector<Byte> dataVector = new Vector<Byte>(Arrays.asList(data));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams()
+
+        for(int i = 0; i < numberOfSignals; ++i){
+            SignalTrace signalTrace = new SignalTrace(getContext(), dataVector, i, paint );
+            signalTrace.setLayoutParams();
+            this.addView(signalTrace);
+        }
     }
 
     private class mGestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -84,5 +95,7 @@ public class MultipleTraceView extends LinearLayout {
             return true;
         }
     }
+
+
 
 }

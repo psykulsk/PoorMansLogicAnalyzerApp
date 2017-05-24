@@ -116,9 +116,9 @@ public class SignalTrace extends View {
     }
 
     /*
-    Check whether bit on certain position in given byte is set to 1
+    Checks whether bit on certain position in given byte is set to 1
 */
-    private boolean getBit(byte _byte, int position) {
+    public static boolean getBit(byte _byte, int position) {
 
         return 1 == ( byte)((_byte >> position) & 1);
 
