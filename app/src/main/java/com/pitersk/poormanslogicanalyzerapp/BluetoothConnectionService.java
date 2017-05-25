@@ -58,7 +58,7 @@ public class BluetoothConnectionService {
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
 
-    private static final int bufferLength = 16834;
+    private static final int bufferLength = 16000;
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
@@ -479,18 +479,36 @@ public class BluetoothConnectionService {
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
-            byte[] buffer = new byte[bufferLength];
-            int bytes;
+            byte[] midBuffer = new byte[bufferLength];
+            byte[] finalBuffer = new byte[bufferLength];
+
+            int totalNumberOfBytes = 0;
+            int numberOfNewBytes;
 
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
                 try {
                     // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
 
-                    // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
+                    numberOfNewBytes = mmInStream.read(midBuffer);
+
+                    for(int i=0; i < numberOfNewBytes; ++i){
+                        if(totalNumberOfBytes+i < bufferLength) {
+                            finalBuffer[totalNumberOfBytes + i] = midBuffer[i];
+                        }
+                    }
+
+
+                    totalNumberOfBytes += numberOfNewBytes;
+
+                   if(totalNumberOfBytes >= bufferLength) {
+                       // Send the full buffer to the UI Activity
+                       mHandler.obtainMessage(Constants.MESSAGE_READ, totalNumberOfBytes, -1, finalBuffer)
+                               .sendToTarget();
+                       Log.d("READ", "Sending " + totalNumberOfBytes + "to UI activity");
+                       totalNumberOfBytes = 0;
+
+                   }
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();

@@ -89,7 +89,7 @@ public class MultipleTraceView extends LinearLayout {
 
             mScaleFactor *= detector.getScaleFactor();
             // Don't let the object get too small or too large.
-            mScaleFactor= Math.max(0.01f, Math.min(mScaleFactor, 5.0f));
+            mScaleFactor= Math.max(0.001f, Math.min(mScaleFactor, 5.0f));
 
             for(int i=0; i < MultipleTraceView.this.getChildCount(); ++i){
                 SignalTrace signalTraceView = (SignalTrace)MultipleTraceView.this.getChildAt(i);
