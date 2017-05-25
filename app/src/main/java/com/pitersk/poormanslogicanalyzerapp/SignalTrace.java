@@ -96,6 +96,8 @@ public class SignalTrace extends View {
         if(indexOfLastDrawnSample >= totalNumberOfSamples)
             indexOfLastDrawnSample = totalNumberOfSamples - 1;
 
+        Log.d(TAG,"Number of drawn samples: " + numberOfDrawnSamples);
+
         /*
         * For each visible sample check the bit on the traceNumber position and draw a line on a proper height.
         * */
@@ -130,10 +132,7 @@ public class SignalTrace extends View {
     public void modifyOffset(float change) {
         if(xOffset + change <= 0) {
             xOffset += change;
-            Log.d(TAG, "offset changed  = " + xOffset);
         }
-        Log.d(TAG, "offset not changed = " + xOffset);
-
     }
 
 
