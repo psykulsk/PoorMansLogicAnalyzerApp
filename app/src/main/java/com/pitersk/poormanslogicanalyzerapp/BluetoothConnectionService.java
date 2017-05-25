@@ -32,14 +32,14 @@ public class BluetoothConnectionService {
     private static final String TAG = "BluetoothConnectionService";
 
     // Name for the SDP record when creating server socket
-    private static final String NAME_SECURE = "BluetoothChatSecure";
-    private static final String NAME_INSECURE = "BluetoothChatInsecure";
+    private static final String NAME_SECURE = "HC-05";
+    private static final String NAME_INSECURE = "HC-05";
 
     // Unique UUID for this application
     private static final UUID MY_UUID_SECURE =
-            UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+            UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static final UUID MY_UUID_INSECURE =
-            UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+            UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     // Member fields
     private final BluetoothAdapter mAdapter;
@@ -56,6 +56,9 @@ public class BluetoothConnectionService {
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
+
+
+    private static final int bufferLength = 16834;
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
@@ -476,7 +479,7 @@ public class BluetoothConnectionService {
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[bufferLength];
             int bytes;
 
             // Keep listening to the InputStream while connected

@@ -3,9 +3,12 @@ package com.pitersk.poormanslogicanalyzerapp;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 
 import java.util.Vector;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by piter on 2017-03-04.
@@ -104,11 +107,11 @@ public class SignalTrace extends View {
                         this.getHeight()/2 + signalHeight/2, linePaint);
             }
             if (currentBit) {
-                canvas.drawLine(xPosition, this.getHeight()/2 + signalHeight/2 , xPosition + timeUnitWidth,
-                        this.getHeight()/2 + signalHeight/2, linePaint);
-            } else {
-                canvas.drawLine(xPosition, this.getHeight()/2 - signalHeight/2, xPosition + timeUnitWidth,
+                canvas.drawLine(xPosition, this.getHeight()/2 - signalHeight/2 , xPosition + timeUnitWidth,
                         this.getHeight()/2 - signalHeight/2, linePaint);
+            } else {
+                canvas.drawLine(xPosition, this.getHeight()/2 + signalHeight/2, xPosition + timeUnitWidth,
+                        this.getHeight()/2 + signalHeight/2, linePaint);
             }
             previousBit = currentBit;
             xPosition += timeUnitWidth;
@@ -125,7 +128,12 @@ public class SignalTrace extends View {
     }
 
     public void modifyOffset(float change) {
-        this.xOffset += change;
+        if(xOffset + change <= 0) {
+            xOffset += change;
+            Log.d(TAG, "offset changed  = " + xOffset);
+        }
+        Log.d(TAG, "offset not changed = " + xOffset);
+
     }
 
 

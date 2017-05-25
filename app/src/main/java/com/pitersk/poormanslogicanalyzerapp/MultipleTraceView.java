@@ -62,7 +62,7 @@ public class MultipleTraceView extends LinearLayout {
         layoutParams.setMargins(0,2,0,2);
 
         for(int i = 0; i < numberOfSignals; ++i){
-            SignalTrace signalTrace = new SignalTrace(getContext(), dataVector, i+3, paint );
+            SignalTrace signalTrace = new SignalTrace(getContext(), dataVector, i, paint );
             signalTrace.setLayoutParams(layoutParams);
             signalTrace.setBackgroundColor(Color.BLACK);
             this.addView(signalTrace);
