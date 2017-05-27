@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.Arrays;
