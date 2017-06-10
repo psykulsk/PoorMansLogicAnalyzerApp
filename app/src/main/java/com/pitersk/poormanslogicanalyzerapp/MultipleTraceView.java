@@ -27,7 +27,7 @@ public class MultipleTraceView extends LinearLayout {
 
     private float mScaleFactor = 0.05f;
 
-    private int numberOfSignals = 4;
+    private int numberOfSignals = 3;
 
     public MultipleTraceView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
