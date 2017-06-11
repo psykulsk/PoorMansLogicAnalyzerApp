@@ -94,6 +94,8 @@ public class SignalTraceFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMultipleTraceView = (MultipleTraceView) view.findViewById(R.id.multiple_trace_view);
+        byte emptyArray[] = new byte[100];
+        mMultipleTraceView.setSignalTraces(emptyArray);
     }
 
     @Override

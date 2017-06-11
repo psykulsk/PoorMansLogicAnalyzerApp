@@ -6,7 +6,9 @@
     <com.pitersk.poormanslogicanalyzerapp.MultipleTraceView
         android:id='@+id/multiple_trace_view'
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="60dp"
+        android:background="@color/black">
 
     </com.pitersk.poormanslogicanalyzerapp.MultipleTraceView>
 
@@ -16,18 +18,48 @@
         android:layout_height="wrap_content"
         android:background="@color/white" />
 
+    <com.pitersk.poormanslogicanalyzerapp.TimeCursor
+        android:id="@+id/cursor_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white" />
+
     <TextView
         android:id="@+id/cursor_one_time_text"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|left" />
+        android:layout_gravity="top|start"
+        android:gravity="start"
+        android:text="@string/cursor_one_initial_text"/>
+    <TextView
+        android:id="@+id/cursor_two_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center"
+        android:gravity="start"
+        android:text="@string/cursor_two_initial_text"/>
+
+    <TextView
+        android:id="@+id/frequency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:gravity="end"
+        android:text="1/|X1-X2| = 0.00 Hz"/>
 
     <ToggleButton
         android:id="@+id/move_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:textOff="Move Cursor"
-        android:textOn="Move Signal" />
+        android:layout_gravity="bottom|start"
+        android:textOff="@string/move_cursor"
+        android:textOn="@string/move_signal" />
+    <ToggleButton
+        android:id="@+id/cursor_selection_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:textOff="@string/cursor_x2"
+        android:textOn="@string/cursor_x1" />
 
 </FrameLayout>

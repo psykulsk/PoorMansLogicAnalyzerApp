@@ -8,6 +8,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.sql.Time;
@@ -29,7 +30,10 @@ public class MultipleTraceView extends LinearLayout {
     private GestureDetector scrollGestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
     private TimeCursor  cursorOne;
+    private TimeCursor  cursorTwo;
+    private ToggleButton cursorSelectButton;
     private ToggleButton moveButton;
+    private TextView    frequencyText;
 
     private float mScaleFactor = 0.05f;
     private float xOffset = 0.0f;
@@ -46,17 +50,68 @@ public class MultipleTraceView extends LinearLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(cursorOne == null)         cursorOne = (TimeCursor) getRootView().findViewById(R.id.cursor_one);
-        if(moveButton == null)        moveButton = (ToggleButton) getRootView().findViewById(R.id.move_button);
+        initializeLayouts();
+
         if(moveButton.isChecked()){
             scaleGestureDetector.onTouchEvent(event);
             if(event.getPointerCount() == 1)
                 scrollGestureDetector.onTouchEvent(event);
         }else {
-            cursorOne.scrollGestureDetector.onTouchEvent(event);
+            if(cursorSelectButton.isChecked()){
+                cursorOne.scrollGestureDetector.onTouchEvent(event);
+            }else{
+                cursorTwo.scrollGestureDetector.onTouchEvent(event);
+            }
         }
+        modifyCursorOne();
+        modifyCursorTwo();
+        frequencyText.setText(String.format("f = %.2f kHz", 1000.0f*calculateFrequency() ));
 
         return true;
+    }
+
+    private float calculateFrequency(){
+        float timeUnitWidth = mScaleFactor * getWidth();
+        float cursorOffset = cursorOne.getxCursorPosition();
+        int numberOfOffsetSamplesToTheLeft = -(int)Math.floor((double)(xOffset-cursorOffset)/timeUnitWidth);
+        float timeOffsetOne = ((float)numberOfOffsetSamplesToTheLeft)* SignalTrace.TIME_UNIT_US;
+        timeUnitWidth = mScaleFactor * getWidth();
+        cursorOffset = cursorTwo.getxCursorPosition();
+        numberOfOffsetSamplesToTheLeft = -(int)Math.floor((double)(xOffset-cursorOffset)/timeUnitWidth);
+        float timeOffsetTwo = ((float)numberOfOffsetSamplesToTheLeft)* SignalTrace.TIME_UNIT_US;
+        return 1.0f/(Math.abs(timeOffsetOne - timeOffsetTwo));
+    }
+
+    private void initializeLayouts(){
+        if(cursorOne == null){
+            cursorOne = (TimeCursor) getRootView().findViewById(R.id.cursor_one);
+            cursorOne.setCursorType(TimeCursor.CursorType.ONE);
+        }
+        if(cursorTwo == null)   {
+            cursorTwo = (TimeCursor) getRootView().findViewById(R.id.cursor_two);
+            cursorTwo.setCursorType(TimeCursor.CursorType.TWO);
+        }
+        if(cursorSelectButton == null)        cursorSelectButton = (ToggleButton) getRootView().findViewById(R.id.cursor_selection_button);
+        if(moveButton == null)        moveButton = (ToggleButton) getRootView().findViewById(R.id.move_button);
+
+        if(frequencyText == null)   frequencyText = (TextView)getRootView().findViewById(R.id.frequency);
+    }
+    private void modifyCursorOne(){
+        float timeUnitWidth = mScaleFactor * getWidth();
+        float cursorOffset = cursorOne.getxCursorPosition();
+        int numberOfOffsetSamplesToTheLeft = -(int)Math.floor((double)(xOffset-cursorOffset)/timeUnitWidth);
+        float timeOffset = ((float)numberOfOffsetSamplesToTheLeft)* SignalTrace.TIME_UNIT_US;
+        cursorOne.setTimeOffset(timeOffset);
+        cursorOne.invalidate();
+    }
+
+    private void modifyCursorTwo(){
+        float timeUnitWidth = mScaleFactor * getWidth();
+        float cursorOffset = cursorTwo.getxCursorPosition();
+        int numberOfOffsetSamplesToTheLeft = -(int)Math.floor((double)(xOffset-cursorOffset)/timeUnitWidth);
+        float timeOffset = ((float)numberOfOffsetSamplesToTheLeft)* SignalTrace.TIME_UNIT_US;
+        cursorTwo.setTimeOffset(timeOffset);
+        cursorTwo.invalidate();
     }
 
     public void setSignalTraces(byte[] newData){

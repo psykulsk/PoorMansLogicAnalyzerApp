@@ -24,11 +24,13 @@ public class SignalTrace extends View {
 
     private float xOffset = 0;
     private int middlePoint = 0;
-    private float timeUnitWidth = 1.0f;
+    public float timeUnitWidth = 1.0f;
     private  float signalHeight;
     private Paint linePaint;
     private Vector<Byte> signalVector;
     private final int traceNumber;
+
+
 
     public SignalTrace(Context context,
                        Vector<Byte> integerVector, int traceNum, Paint paint) {
@@ -77,9 +79,7 @@ public class SignalTrace extends View {
         * */
         int numberOfDrawnSamples = (int)Math.ceil(1/(double)(timeScale))+1;
         int numberOfOffsetSamplesToTheLeft = -(int)Math.floor((double)xOffset/timeUnitWidth);
-        float timeOffset = ((float)numberOfOffsetSamplesToTheLeft)* TIME_UNIT_US;
-        cursorOne.setTimeOffset(timeOffset);
-        cursorOne.invalidate();
+
 
         int totalNumberOfSamples = signalVector.size();
 

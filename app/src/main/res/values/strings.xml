@@ -23,7 +23,14 @@
     <string name="secure_connect">Connect a device - Secure</string>
     <string name="insecure_connect">Connect a device - Insecure</string>
     <string name="discoverable">Make discoverable</string>
+    <string name="cursor_x1">Cursor X1</string>
+    <string name="cursor_x2">Cursor X2</string>
+    <string name="move_cursor">Move Cursor</string>
+    <string name="move_signal">Move Signal</string>
+    <string name="cursor_one_initial_text">X1 = 0,00 us</string>
+    <string name="cursor_two_initial_text">X2 = 0,00 us</string>
 
 
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 </resources>

@@ -19,9 +19,12 @@ public class TimeCursor extends View {
 
     private float timeOffset = 0.0f;
     Paint linePaint;
-    TextView timeTextView;
+    TextView timeTextViewOne;
+    TextView timeTextViewTwo;
     public GestureDetector scrollGestureDetector;
     private float xCursorPosition = 50.0f;
+    public enum CursorType{ ONE, TWO};
+    private CursorType  cursorType = CursorType.ONE;
 
     public TimeCursor(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -56,11 +59,16 @@ public class TimeCursor extends View {
     }
 
     void drawTimeSign(Canvas canvas){
-        if(timeTextView == null) timeTextView = (TextView)getRootView().findViewById(R.id.cursor_one_time_text);
+        if(timeTextViewOne == null) timeTextViewOne = (TextView)getRootView().findViewById(R.id.cursor_one_time_text);
+        if(timeTextViewTwo == null) timeTextViewTwo = (TextView)getRootView().findViewById(R.id.cursor_two_time_text);
+
 
         canvas.drawLine(xCursorPosition, 0.0f, xCursorPosition, getHeight(), linePaint);
 
-        timeTextView.setText(String.format("X = %.2f us", timeOffset));
+        if(cursorType == CursorType.ONE)
+            timeTextViewOne.setText(String.format("X1 = %.2f us", timeOffset));
+        else
+            timeTextViewTwo.setText(String.format("X2 = %.2f us", timeOffset));
     }
 
 //    @Override
@@ -82,6 +90,13 @@ public class TimeCursor extends View {
 
     void setTimeOffset( float timeOffset) {
         this.timeOffset = timeOffset;
+    }
+    float getxCursorPosition(){
+        return xCursorPosition;
+    }
+
+    void setCursorType( CursorType cursorType){
+        this.cursorType = cursorType;
     }
 
 }
