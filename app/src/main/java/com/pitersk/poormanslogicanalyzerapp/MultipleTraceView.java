@@ -8,7 +8,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.LinearLayout;
+import android.widget.ToggleButton;
 
+import java.sql.Time;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -22,10 +24,15 @@ import java.util.Vector;
 
 public class MultipleTraceView extends LinearLayout {
 
-    private GestureDetector gestureDetector;
+
+
+    private GestureDetector scrollGestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
+    private TimeCursor  cursorOne;
+    private ToggleButton moveButton;
 
     private float mScaleFactor = 0.05f;
+    private float xOffset = 0.0f;
 
     private int numberOfSignals = 3;
 
@@ -33,20 +40,24 @@ public class MultipleTraceView extends LinearLayout {
         super(context, attributeSet);
         this.setOrientation(LinearLayout.VERTICAL);
         this.setBackgroundColor(Color.WHITE);
-        gestureDetector = new GestureDetector(context, new MultipleTraceView.mGestureListener());
+        scrollGestureDetector = new GestureDetector(context, new mScrollGestureListener());
         scaleGestureDetector = new ScaleGestureDetector(context, new MultipleTraceView.mScaleGestureListener());
-
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //Let the gestureDetector inspect all events;
-        gestureDetector.onTouchEvent(event);
-        scaleGestureDetector.onTouchEvent(event);
+        if(cursorOne == null)         cursorOne = (TimeCursor) getRootView().findViewById(R.id.cursor_one);
+        if(moveButton == null)        moveButton = (ToggleButton) getRootView().findViewById(R.id.move_button);
+        if(moveButton.isChecked()){
+            scaleGestureDetector.onTouchEvent(event);
+            if(event.getPointerCount() == 1)
+                scrollGestureDetector.onTouchEvent(event);
+        }else {
+            cursorOne.scrollGestureDetector.onTouchEvent(event);
+        }
 
         return true;
     }
-
 
     public void setSignalTraces(byte[] newData){
         this.setWeightSum(numberOfSignals);
@@ -69,13 +80,15 @@ public class MultipleTraceView extends LinearLayout {
         this.invalidate();
     }
 
-    private class mGestureListener extends GestureDetector.SimpleOnGestureListener {
+    private class mScrollGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
             for(int i=0; i < MultipleTraceView.this.getChildCount(); ++i){
                 SignalTrace signalTraceView = (SignalTrace)MultipleTraceView.this.getChildAt(i);
-                signalTraceView.modifyOffset(-distanceX);
+                if( xOffset - distanceX <= 0 )
+                    xOffset -= distanceX;
+                signalTraceView.setxOffset(xOffset);
                 signalTraceView.invalidate();
             }
             return true;
@@ -83,12 +96,16 @@ public class MultipleTraceView extends LinearLayout {
     }
 
     private class mScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+        private static final float MIN_SCALE_FACTOR = 0.003f;
+        private static final float MAX_SCALE_FACTOR = 5.0f;
+
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
 
             mScaleFactor *= detector.getScaleFactor();
             // Don't let the object get too small or too large.
-            mScaleFactor= Math.max(0.001f, Math.min(mScaleFactor, 5.0f));
+            mScaleFactor= Math.max(MIN_SCALE_FACTOR, Math.min(mScaleFactor, MAX_SCALE_FACTOR));
 
             for(int i=0; i < MultipleTraceView.this.getChildCount(); ++i){
                 SignalTrace signalTraceView = (SignalTrace)MultipleTraceView.this.getChildAt(i);
@@ -98,7 +115,5 @@ public class MultipleTraceView extends LinearLayout {
             return true;
         }
     }
-
-
 
 }

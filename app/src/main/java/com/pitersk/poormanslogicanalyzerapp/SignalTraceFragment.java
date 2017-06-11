@@ -18,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import static android.content.ContentValues.TAG;
@@ -29,7 +28,6 @@ import static android.content.ContentValues.TAG;
 
 public class SignalTraceFragment extends Fragment {
 
-    private Button mSendButton;
 
     /**
      * Name of the connected device
@@ -96,26 +94,20 @@ public class SignalTraceFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMultipleTraceView = (MultipleTraceView) view.findViewById(R.id.multiple_trace_view);
-        mSendButton = (Button) view.findViewById(R.id.button);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.signal_trace_menu, menu);
-
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         // Launch the DeviceListActivity to see devices and do scan
         Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
         startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
-
         return true;
-
     }
 
     /**
@@ -124,18 +116,6 @@ public class SignalTraceFragment extends Fragment {
     private void setupChat() {
         Log.d(TAG, "setupChat()");
 
-
-        // Initialize the send button with a listener that for click events
-        mSendButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Send a message using content of the edit text widget
-                View view = getView();
-                if (null != view) {
-                    String message = "Test messsage";
-                    sendMessage(message);
-                }
-            }
-        });
 
         // Initialize the BluetoothChatService to perform bluetooth connections
         mConnectionService = new BluetoothConnectionService(getActivity(), mHandler);

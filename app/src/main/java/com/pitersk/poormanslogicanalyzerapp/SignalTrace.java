@@ -16,7 +16,9 @@ import static android.content.ContentValues.TAG;
 
 public class SignalTrace extends View {
 
+    private TimeCursor cursorOne;
 
+    public static final float TIME_UNIT_US = 0.1f;
     private float timeScale = 0.05f;
     private float signalHeightScale = 0.8f;
 
@@ -39,23 +41,14 @@ public class SignalTrace extends View {
 
         timeUnitWidth = timeScale * getWidth();
         signalHeight = signalHeightScale * getHeight();
-
-
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         super.onDraw(canvas);
-
         canvas.save();
-
-
         drawSignalTrace(canvas);
-
         canvas.restore();
-
-
     }
 
     @Override
@@ -70,6 +63,7 @@ public class SignalTrace extends View {
     }
 
     private void drawSignalTrace(Canvas canvas){
+        if(cursorOne == null)         cursorOne = (TimeCursor) getRootView().findViewById(R.id.cursor_one);
         float xPosition = 0;
 
         boolean currentBit;
@@ -83,6 +77,9 @@ public class SignalTrace extends View {
         * */
         int numberOfDrawnSamples = (int)Math.ceil(1/(double)(timeScale))+1;
         int numberOfOffsetSamplesToTheLeft = -(int)Math.floor((double)xOffset/timeUnitWidth);
+        float timeOffset = ((float)numberOfOffsetSamplesToTheLeft)* TIME_UNIT_US;
+        cursorOne.setTimeOffset(timeOffset);
+        cursorOne.invalidate();
 
         int totalNumberOfSamples = signalVector.size();
 
@@ -129,10 +126,8 @@ public class SignalTrace extends View {
 
     }
 
-    public void modifyOffset(float change) {
-        if(xOffset + change <= 0) {
-            xOffset += change;
-        }
+    public void setxOffset(float xOffset ) {
+        this.xOffset = xOffset;
     }
 
 

@@ -10,15 +10,24 @@
 
     </com.pitersk.poormanslogicanalyzerapp.MultipleTraceView>
 
-    <com.pitersk.poormanslogicanalyzerapp.TimeSign
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/button"
+    <com.pitersk.poormanslogicanalyzerapp.TimeCursor
+        android:id="@+id/cursor_one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|bottom"
-        android:text="Button" />
+        android:background="@color/white" />
+
+    <TextView
+        android:id="@+id/cursor_one_time_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left" />
+
+    <ToggleButton
+        android:id="@+id/move_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:textOff="Move Cursor"
+        android:textOn="Move Signal" />
 
 </FrameLayout>
