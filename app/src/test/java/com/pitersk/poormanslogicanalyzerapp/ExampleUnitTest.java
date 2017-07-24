@@ -19,9 +19,9 @@ public class ExampleUnitTest {
 
     @Test
     public void getBit_isCorrect() throws Exception {
-        assertEquals((byte) 1, SignalTrace.getBit((byte) 2, 1));
-        assertEquals((byte) 1, SignalTrace.getBit((byte) 1, 0));
-        assertEquals((byte) 1, SignalTrace.getBit((byte) 8, 3));
+        assertEquals(true, SignalTrace.getBit((byte) 2, 1));
+        assertEquals(true, SignalTrace.getBit((byte) 1, 0));
+        assertEquals(true, SignalTrace.getBit((byte) 8, 3));
     }
 
 }

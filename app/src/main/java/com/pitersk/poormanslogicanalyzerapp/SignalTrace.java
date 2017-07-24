@@ -3,9 +3,12 @@ package com.pitersk.poormanslogicanalyzerapp;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 
 import java.util.Vector;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by piter on 2017-03-04.
@@ -13,14 +16,13 @@ import java.util.Vector;
 
 public class SignalTrace extends View {
 
-
-    private float timeScale;
-    private float signalHeightScale = 0.8f;
+    public static final float TIME_UNIT_US = 0.1f;
+    private float timeScale = 0.05f;
+    private float signalHeightScale = 0.7f;
 
     private float xOffset = 0;
-    private int middlePoint = 0;
-    private float timeUnitWidth = 1.0f;
-    private  float signalHeight;
+    public float timeUnitWidth = 1.0f;
+    private float signalHeight;
     private Paint linePaint;
     private Vector<Byte> signalVector;
     private final int traceNumber;
@@ -36,23 +38,14 @@ public class SignalTrace extends View {
 
         timeUnitWidth = timeScale * getWidth();
         signalHeight = signalHeightScale * getHeight();
-
-
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         super.onDraw(canvas);
-
         canvas.save();
-
-
         drawSignalTrace(canvas);
-
         canvas.restore();
-
-
     }
 
     @Override
@@ -66,7 +59,7 @@ public class SignalTrace extends View {
         this.timeScale = timeScale;
     }
 
-    private void drawSignalTrace(Canvas canvas){
+    private void drawSignalTrace(Canvas canvas) {
         float xPosition = 0;
 
         boolean currentBit;
@@ -78,37 +71,40 @@ public class SignalTrace extends View {
         * Calculations that will allow to draw on the screen only samples that can be seen.
         * Without this, with long vectors of samples, drawing all of them wouldn't be efficient.
         * */
-        int numberOfDrawnSamples = (int)Math.ceil(1/(double)(timeScale))+1;
-        int numberOfOffsetSamplesToTheLeft = -(int)Math.floor((double)xOffset/timeUnitWidth);
+        int numberOfDrawnSamples = (int) Math.ceil(1 / (double) (timeScale)) + 1;
+        int numberOfOffsetSamplesToTheLeft = -(int) Math.floor((double) xOffset / timeUnitWidth);
+
 
         int totalNumberOfSamples = signalVector.size();
 
-        if(numberOfOffsetSamplesToTheLeft < 0)
+        if (numberOfOffsetSamplesToTheLeft < 0)
             numberOfOffsetSamplesToTheLeft = 0;
-        else if(numberOfOffsetSamplesToTheLeft >= totalNumberOfSamples)
-            numberOfOffsetSamplesToTheLeft = totalNumberOfSamples -1;
+        else if (numberOfOffsetSamplesToTheLeft >= totalNumberOfSamples)
+            numberOfOffsetSamplesToTheLeft = totalNumberOfSamples - 1;
 
         int indexOfLastDrawnSample = numberOfOffsetSamplesToTheLeft + numberOfDrawnSamples;
 
-        if(indexOfLastDrawnSample >= totalNumberOfSamples)
+        if (indexOfLastDrawnSample >= totalNumberOfSamples)
             indexOfLastDrawnSample = totalNumberOfSamples - 1;
+
+        Log.d(TAG, "Number of drawn samples: " + numberOfDrawnSamples);
 
         /*
         * For each visible sample check the bit on the traceNumber position and draw a line on a proper height.
         * */
-        for ( int index = numberOfOffsetSamplesToTheLeft; index < indexOfLastDrawnSample; index++) {
+        for (int index = numberOfOffsetSamplesToTheLeft; index < indexOfLastDrawnSample; index++) {
             Byte sample = signalVector.elementAt(index);
             currentBit = getBit(sample, traceNumber);
-            if(previousBit != currentBit){
-                canvas.drawLine(xPosition, this.getHeight()/2 - signalHeight/2 , xPosition,
-                        this.getHeight()/2 + signalHeight/2, linePaint);
+            if (previousBit != currentBit && index != 0) {
+                canvas.drawLine(xPosition, this.getHeight() / 2 - signalHeight / 2, xPosition,
+                        this.getHeight() / 2 + signalHeight / 2, linePaint);
             }
             if (currentBit) {
-                canvas.drawLine(xPosition, this.getHeight()/2 + signalHeight/2 , xPosition + timeUnitWidth,
-                        this.getHeight()/2 + signalHeight/2, linePaint);
+                canvas.drawLine(xPosition, this.getHeight() / 2 - signalHeight / 2, xPosition + timeUnitWidth,
+                        this.getHeight() / 2 - signalHeight / 2, linePaint);
             } else {
-                canvas.drawLine(xPosition, this.getHeight()/2 - signalHeight/2, xPosition + timeUnitWidth,
-                        this.getHeight()/2 - signalHeight/2, linePaint);
+                canvas.drawLine(xPosition, this.getHeight() / 2 + signalHeight / 2, xPosition + timeUnitWidth,
+                        this.getHeight() / 2 + signalHeight / 2, linePaint);
             }
             previousBit = currentBit;
             xPosition += timeUnitWidth;
@@ -116,16 +112,16 @@ public class SignalTrace extends View {
     }
 
     /*
-    Check whether bit on certain position in given byte is set to 1
+    Checks whether bit on certain position in given byte is set to 1
 */
-    private boolean getBit(byte _byte, int position) {
+    public static boolean getBit(byte _byte, int position) {
 
-        return 1 == ( byte)((_byte >> position) & 1);
+        return 1 == (byte) ((_byte >> position) & 1);
 
     }
 
-    public void modifyOffset(float change) {
-        this.xOffset += change;
+    public void setxOffset(float xOffset) {
+        this.xOffset = xOffset;
     }
 
 
