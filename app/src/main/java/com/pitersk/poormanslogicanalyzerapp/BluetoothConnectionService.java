@@ -479,7 +479,9 @@ public class BluetoothConnectionService {
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
+            // Stores data directly from the input stream
             byte[] midBuffer = new byte[bufferLength];
+            // Buffers data from multiple reads
             byte[] finalBuffer = new byte[bufferLength];
 
             int totalNumberOfBytes = 0;
@@ -492,23 +494,22 @@ public class BluetoothConnectionService {
 
                     numberOfNewBytes = mmInStream.read(midBuffer);
 
-                    for(int i=0; i < numberOfNewBytes; ++i){
-                        if(totalNumberOfBytes+i < bufferLength) {
+                    for (int i = 0; i < numberOfNewBytes; ++i) {
+                        if (totalNumberOfBytes + i < bufferLength) {
                             finalBuffer[totalNumberOfBytes + i] = midBuffer[i];
                         }
                     }
 
-
                     totalNumberOfBytes += numberOfNewBytes;
 
-                   if(totalNumberOfBytes >= bufferLength) {
-                       // Send the full buffer to the UI Activity
-                       mHandler.obtainMessage(Constants.MESSAGE_READ, totalNumberOfBytes, -1, finalBuffer)
-                               .sendToTarget();
-                       Log.d("READ", "Sending " + totalNumberOfBytes + "to UI activity");
-                       totalNumberOfBytes = 0;
+                    if (totalNumberOfBytes >= bufferLength) {
+                        // Send the full buffer to the UI Activity
+                        mHandler.obtainMessage(Constants.MESSAGE_READ, totalNumberOfBytes, -1, finalBuffer)
+                                .sendToTarget();
+                        Log.d("READ", "Sending " + totalNumberOfBytes + "to UI activity");
+                        totalNumberOfBytes = 0;
 
-                   }
+                    }
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();

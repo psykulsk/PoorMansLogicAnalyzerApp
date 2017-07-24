@@ -93,6 +93,7 @@ public class SignalTraceFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // Creates view with empty signal (only zeros)
         mMultipleTraceView = (MultipleTraceView) view.findViewById(R.id.multiple_trace_view);
         byte emptyArray[] = new byte[100];
         mMultipleTraceView.setSignalTraces(emptyArray);
@@ -117,7 +118,6 @@ public class SignalTraceFragment extends Fragment {
      */
     private void setupChat() {
         Log.d(TAG, "setupChat()");
-
 
         // Initialize the BluetoothChatService to perform bluetooth connections
         mConnectionService = new BluetoothConnectionService(getActivity(), mHandler);
@@ -210,30 +210,6 @@ public class SignalTraceFragment extends Fragment {
             return;
         }
         actionBar.setSubtitle(subTitle);
-    }
-
-    /**
-     * Sends a message.
-     *
-     * @param message A string of text to send.
-     */
-    private void sendMessage(String message) {
-        // Check that we're actually connected before trying anything
-        if (mConnectionService.getState() != BluetoothConnectionService.STATE_CONNECTED) {
-            Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check that there's actually something to send
-        if (message.length() > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
-            byte[] send = message.getBytes();
-            mConnectionService.write(send);
-
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            // mConnectionService.setText(mOutStringBuffer);
-        }
     }
 
     /**
